@@ -1,18 +1,81 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.ozcanturkmen</groupId>
-  <artifactId>ontocsv</artifactId>
-  <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>ontocsv</name>
-  <url>http://maven.apache.org</url>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.ozcanturkmen</groupId>
+    <artifactId>ontocsv</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>OntoCSV is a Java library that can be used to populate OWL ontology classes with instances provided via a CSV file</description>
+    <url>https://github.com/ozcanturkmen/ontocsv</url>
+
+    <properties>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.jena>3.14.0</version.jena>
+        <version.slf4j>1.7.30</version.slf4j>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>Apache License Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+        <license>
+            <name>GNU LGPL Version 3.0</name>
+            <url>http://www.gnu.org/licenses/lgpl.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Özcan Türkmen</name>
+        <url>https://github.com/ozcanturkmen/</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <name>Özcan Türkmen</name>
+            <email>o_turkmen@yahoo.com</email>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/ozcanturkmen/ontocsv/issues</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:git://github.com/ozcanturkmen/ontocsv.git</connection>
+        <developerConnection>scm:git:ssh://github.com/ozcanturkmen/ontocsv.git</developerConnection>
+        <url>https://github.com/ozcanturkmen/ontocsv</url>
+    </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>apache-jena-libs</artifactId>
+            <type>pom</type>
+            <version>${version.jena}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${version.slf4j}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
   </dependencies>
 </project>
