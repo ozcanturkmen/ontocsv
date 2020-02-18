@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/ozcanturkmen/ontologies/2020/1/sampleontology#"
+     xml:base="http://www.semanticweb.org/ozcanturkmen/ontologies/2020/1/sampleontology"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/ozcanturkmen/ontologies/2020/1/sampleontology"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/ozcanturkmen/ontologies/2020/1/sampleontology#Country -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ozcanturkmen/ontologies/2020/1/sampleontology#Country"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ozcanturkmen/ontologies/2020/1/sampleontology#Language -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ozcanturkmen/ontologies/2020/1/sampleontology#Language"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/ozcanturkmen/ontologies/2020/1/sampleontology#german -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ozcanturkmen/ontologies/2020/1/sampleontology#german">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ozcanturkmen/ontologies/2020/1/sampleontology#Language"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ozcanturkmen/ontologies/2020/1/sampleontology#germany -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ozcanturkmen/ontologies/2020/1/sampleontology#germany">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ozcanturkmen/ontologies/2020/1/sampleontology#Country"/>
+    </owl:NamedIndividual>
+</rdf:RDF>
