@@ -323,11 +323,4 @@ public class InstancePopulator {
         }
     }
 
-    /*
-    public static void main(String... args) {
-        Optional<InstancePopulator> populator = InstancePopulator.create();
-        populator.ifPresent(p -> p.process());
-    }
-    */
-
 }
