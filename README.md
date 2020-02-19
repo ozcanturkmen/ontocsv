@@ -1,6 +1,8 @@
 # OntoCSV (ver. 1.0.0)
 OntoCSV is a small Java library that can be used to populate an OWL ontology (in RDF/XML format) with instances (individuals) provided via CSV files.
 
+[![Javadoc](https://img.shields.io/badge/javadoc-1.0.0-brightgreen)](https://ozcanturkmen.github.io/ontocsv-apidocs/)
+
 ## How to build OntoCSV
 
 OntoCSV uses Maven as its build tool.
