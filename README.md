@@ -18,11 +18,11 @@ Maven:
 
 ### InstancePopulator class (The **create()** and the **process()** methods)
 
-OntoCSV provides a single immutable InstancePopulator class which has a static factory method ```Java InstancePopulator.create()``` to instantiate the class, as well as a public instance method, process(), to populate the desired ontology classes with the instances/individuals provided via an input csv file. 
+OntoCSV provides a single immutable *InstancePopulator* class which has a static factory method ```InstancePopulator.create()``` to instantiate the class, as well as a public instance method, ```process()```, to populate the desired ontology classes with the instances/individuals provided via an input csv file. 
 
-The no-argument variant of InstancePopulator.create() expects to find the input files in the current working directory, whereas the overloaded variant, InstancePopulator.create(String path, String... otherPathParts), can be hinted about the location of the files. In the latter case, the method parameters are passed to java.nio.file.Paths.get(String first, String... other) method to construct a system dependent java.nio.file.Path. 
+The no-argument variant of ```InstancePopulator.create()``` expects to find the input files in the current working directory, whereas the overloaded variant, ```InstancePopulator.create(String path, String... otherPathParts)```, can be hinted about the location of the files. In the latter case, the method parameters are passed to ```java.nio.file.Paths.get(String first, String... other)``` method to construct a system dependent ```java.nio.file.Path```. 
 
-Note, however, that in either case the create() method is working with a single **directory path**, and **not** with separate **file paths**. 
+Note, however, that in either case the ```create()``` method is working with a single **directory path**, and **not** with separate **file paths**. 
 
 ### Input files (1 .owl, and 2 .cvs files)
 
@@ -32,7 +32,7 @@ The original ontology (a .owl file in RDF/XML format), a csv file containing the
 
 The class names csv file consists of a single line, containing the names of classes as its comma separated values. You can think of it as the header line that is split from a single instances input csv file. The reason the input data is expected to split into two separate files is to better benefit from Java 8 Streams API's parallel processing capabilities. 
 
-In the common use case, the instances input csv file will likely be huge, so there is a good reason to move the header line to a separate file, so that the remaining lines can be easily processed in parallel, without the need to sequentialize the ```Java java.nio.file.Files.lines()``` stream in order to read the first (the header) line. 
+In the common use case, the instances input csv file will likely be huge, so there is a good reason to move the header line to a separate file, so that the remaining lines can be easily processed in parallel, without the need to sequentialize the ```java.nio.file.Files.lines()``` stream in order to read the first (the header) line. 
 
 ### Auto-discovery of input files within the specified directory
 
@@ -40,19 +40,19 @@ We do not need to provide the name of each input file separately, as with the ab
 
 Note that the instances input file would be **some** other csv file, so it's best to keep no more than 2 csv files in the input directory, rather than relying on programmatic guessing or randomness. 
 
-### Constructor creates an java.util.Optional 
+### Constructor creates an ```java.util.Optional``` 
 
-If everything goes well, that is a correct path has been supplied, and no IllegalArgumentException has been thrown, InstancePopulator.create() will return an InstancePopulator instance, but wrapped inside an Optional. 
+If everything goes well, that is a correct path has been supplied, and no ```IllegalArgumentException``` has been thrown, ```InstancePopulator.create()``` will return an InstancePopulator instance, but wrapped inside an ```Optional```. 
 
-So the consumer code is encouraged and supposed to check whether the Optional is empty or not, prior to process() method invocation.
+So the consumer code is encouraged and supposed to check whether the ```Optional``` is empty or not, prior to ```process()``` method invocation.
 
 ## Example Code
 
-The following example demonstrates the usage of InstancePopulator, including the static factory method InstancePopulator.create() and the process() instance method. 
+The following example demonstrates the usage of *InstancePopulator*, including the static factory method ```InstancePopulator.create()``` and the ```process()``` instance method. 
 
-The no-argument variant of create() expects to find the input files in the current working directory. The simple logic behind the auto-discovery of input files is explained in above section. 
+The no-argument variant of ```create()``` expects to find the input files in the current working directory. The simple logic behind the auto-discovery of input files is explained in above section. 
 
-Note the Optional.ifPresent() check before invoking process():  
+Note the ```Optional.ifPresent()``` check before invoking ```process()```:  
 
 ```Java
 import com.github.ozcanturkmen.ontocsv.*;
