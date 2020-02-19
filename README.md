@@ -16,7 +16,7 @@ Maven:
 
 ## Usage
 
-### InstancePopulator class (The **create()** and the **process()** methods)
+### InstancePopulator class
 
 OntoCSV provides a single immutable *InstancePopulator* class which has a static factory method ```InstancePopulator.create()``` to instantiate the class, as well as a public instance method, ```process()```, to populate the desired ontology classes with the instances/individuals provided via an input csv file. 
 
@@ -24,13 +24,13 @@ The no-argument variant of ```InstancePopulator.create()``` expects to find the 
 
 Note, however, that in either case the ```create()``` method is working with a single **directory path**, and **not** with separate **file paths**. 
 
-### Input files (1 .owl, and 2 .cvs files)
+### Input files (1 .owl and 2 .cvs files)
 
 Prior to execution, exactly *3 input files* should exist in the specified directory: 
 
 The original ontology (a .owl file in RDF/XML format), a csv file containing the names of ontology classes to be populated, plus another csv file that contains the names of individuals to be added to those classes. 
 
-The class names csv file consists of a single line, containing the names of classes as its comma separated values. You can think of it as the header line that is split from a single instances input csv file. The reason the input data is expected to split into two separate files is to better benefit from Java 8 Streams API's parallel processing capabilities. 
+The class names csv file consists of a single line, containing the names of classes as its comma separated values. You can think of it as the header line that is split from a single instances input csv file. The reason the input data is expected to split into two separate files is to better benefit from *Java 8 Streams API*'s parallel processing capabilities. 
 
 In the common use case, the instances input csv file will likely be huge, so there is a good reason to move the header line to a separate file, so that the remaining lines can be easily processed in parallel, without the need to sequentialize the ```java.nio.file.Files.lines()``` stream in order to read the first (the header) line. 
 
