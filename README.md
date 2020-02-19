@@ -24,7 +24,7 @@ Maven:
 OntoCSV is released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
 
 ```
-Copyright (C) Özcan Türkmen, 2020
+Copyright &copy; Özcan Türkmen, 2020
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
