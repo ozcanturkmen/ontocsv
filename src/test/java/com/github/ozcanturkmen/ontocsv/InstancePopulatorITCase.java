@@ -29,8 +29,6 @@ import org.junit.Test;
 
 /**
  * Integration testing for {@link InstancePopulator}
- * <p>
- * Created by @ot on 19.02.2020
  */
 public class InstancePopulatorITCase {
     @Test

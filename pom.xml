@@ -179,16 +179,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.1.1</version>
-                <configuration>
-                    <tags>
-                        <tag>
-                            <name>ot</name>
-                            <!-- author name tag for all places -->
-                            <placement>a</placement>
-                            <head>Özcan Türkmen</head>
-                        </tag>
-                    </tags>
-                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

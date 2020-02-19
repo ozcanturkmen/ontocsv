@@ -22,8 +22,6 @@ import org.junit.Test;
 
 /**
  * Unit tests for {@link InstancePopulator}
- * <p>
- * Created by @ot on 19.02.2020
  */
 public class InstancePopulatorTest {
 

@@ -323,16 +323,11 @@ public class InstancePopulator {
         }
     }
 
-    /**
-     * A demo runner that demonstrates the usage 
-     * in case the input .owl and .csv files 
-     * are put in the current working directory.
-     * 
-     * @param   args    optional execution parameters (that actually are NOT evaluated)
-     */
+    /*
     public static void main(String... args) {
         Optional<InstancePopulator> populator = InstancePopulator.create();
         populator.ifPresent(p -> p.process());
     }
+    */
 
 }
