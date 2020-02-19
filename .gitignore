@@ -1,16 +1,71 @@
-target/
+# ignore protege catalog
+catalog-v001.xml
+
+# ignore .svn metadata files
+.svn
+
+# ignore Maven generated target folders
+~
+target
+
+# ignore eclipse files
+.externalToolBuilders
+RemoteSystemsTempFiles
+.project
+.classpath
+.settings
+.metadata
+maven-eclipse.xml
+
+# ignore m2e annotation processing files
+.factorypath
+
+# ignore IDEA files
+*.iml
+*.ipr
+*.iws
+.idea
+
+# ignore NetBeans files
+nbactions.xml
+nb-configuration.xml
+catalog.xml
+
+# ignore vscode directories
 bin/
 .settings/
+
+# vim files
+*.swp
+/.gitk-tmp.*
+atlassian-ide-plugin.xml
+
+# temp files
+*~
+
+# maven versions backup plugin
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
 pom.xml.next
+
+# ignore maven properties, reduced pom, and wrapper
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
+
+# ignore mac os x files
 .DS_Store
-.classpath
-.project
-catalog-v001.xml
+
+#ignore logs
+*.log
+logs
+
+#ignore debug files
+.debug
+
+#ignore scala
+.cache
+nohup.out

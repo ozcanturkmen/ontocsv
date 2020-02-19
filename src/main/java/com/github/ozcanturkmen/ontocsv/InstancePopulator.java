@@ -1,3 +1,19 @@
+/**
+ * This file is part of the OntoCSV software.
+ * Copyright (c) 2020, Özcan Türkmen.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package com.github.ozcanturkmen.ontocsv;
 
 import static java.util.stream.Collectors.collectingAndThen;
@@ -35,6 +51,19 @@ import org.apache.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * InstancePopulator class provides the methods to populate an OWL ontology (in RDF/XML format)
+ * with instances provided via CSV (comma separated values) files.
+ * <p>
+ * Class and instance names are expected to be provided as separate csv files.
+ * <p>
+ * The class makes use of the Apache JENA library to create an in-memory ontology model
+ * using {@link OntModelSpec#OWL_DL_MEM} specification.
+ * It creates the instances for the given classes as named individuals within the ontology.
+ * 
+ * @author      Özcan Türkmen
+ * @version     1.0
+ */
 public class InstancePopulator {
 
     private enum FileType { OWL, CSV, OTHER }
@@ -47,6 +76,14 @@ public class InstancePopulator {
     private final String nsPrefixURI;
     private final OntModel model;
 
+    /**
+     * Private constructor accessed through {@link #create} static factory method. 
+     * 
+     * @param   fileMap   {@link Map} of {@link List} of file {@link Path}s mapped using {@link FileType} keys
+     * @see     {@link FileType} 
+     * @see     {@link #create}
+     * @see     {@link Path}
+     */
     private InstancePopulator(Map<FileType, List<Path>> fileMap) {
         this.ontologyFilePath = fileMap.get(FileType.OWL).get(0);
         this.csvClassesFilePath = fileMap.get(FileType.CSV).get(0);
@@ -55,6 +92,14 @@ public class InstancePopulator {
         this.nsPrefixURI = this.model.getNsPrefixURI("");
     }
 
+    /**
+     * Creates an {@link OntModel.OWL_DL_MEM} ontology model, 
+     * and reads the ontology specified by {@code #ontologyFilePath} field into that model.
+     * 
+     * @return      {@link OntModel} created ontology model
+     * @throws      {@code IllegalArgumentException} if the ontology file cannot be read
+     * @see         {@link ModelFactory#createOntologyModel}
+     */
     private OntModel getOntology() {
         OntModel ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM, null);
         InputStream in = FileManager.get().open(this.ontologyFilePath.toString());
@@ -66,14 +111,30 @@ public class InstancePopulator {
         return ontologyModel;
     }
 
+    /**
+     * Creates a custom {@link Collector} which uses a sorted {@code List} of type {@code T} as supplier.
+     * Sort logic is imposed by the {@code c} parameter which denotes a {@link Comparator} expression. 
+     * 
+     * @param <T>   type of {@linkplain Collection} to be used as the sorted container for the {@link Collector}
+     * @param c     {@link Comparator}   comparator to be used when sorting {@linkplain List<T>}
+     * @return      {@link Collector} of {@code T}
+     */
     private static <T> Collector<T, ?, List<T>> toSortedList(Comparator<? super T> c) {
         return collectingAndThen(
             toCollection(ArrayList::new), l -> { l.sort(c); return l; }
         );
     }
 
-    private static String evaluateLine(String line) {
-        if (line == null || !line.contains("\"")) return line.trim();
+    /**
+     * Handles lines that contains double quotes.
+     * Trims the line, removes double quotes, and replaces the first comma with a tilda (~) if it was placed within double quotes.
+     * 
+     * @param   line    a single line read from input csv file
+     * @return          normalized line
+     */
+    protected static String evaluateLine(String line) {
+        if (line == null || line.isEmpty()) return "";
+        if (!line.contains("\"")) return line.trim();
         StringBuilder sb = new StringBuilder(line.trim());
         int count = 0, fromIndex = 0, prevIndex = -2;
         while ((fromIndex = line.indexOf("\"", fromIndex)) != -1) {
@@ -88,7 +149,15 @@ public class InstancePopulator {
         return sb.toString().replace("\"", "");
     }
 
-    private static String getNormalizedInstanceName(String instanceName) {
+    /**
+     * Normalizes instance name by evaluating common punctuation marks.
+     * Spaces are replaced with underscores, the string gets trimmed and converted to lowercase letters.
+     * 
+     * @param   instanceName    name of an ontology class instance read from a csv input file
+     * @return                  normalized instance name
+     */
+    protected static String getNormalizedInstanceName(String instanceName) {
+        if (instanceName == null || instanceName.isEmpty()) return "";
         return instanceName
             .trim()
             .toLowerCase()
@@ -102,10 +171,32 @@ public class InstancePopulator {
             .replaceAll("(\\s)+", "_");
     }
     
+    /**
+     * Factory method to create an {@code InstancePopulator} instance 
+     * using .owl and .csv file assets found in current working directory.
+     * 
+     * @return                  {@link Optional} of {@link InstancePopulator}
+     * @see                     #create(String path, String... otherPathParts)
+     */
     public static Optional<InstancePopulator> create() {
-        return create("./");
+        // Expects to find the assets in current working directory
+        return create("");
     }
 
+    /**
+     * Factory method with path parameter to create an {@code InstancePopulator} instance.
+     * <p>
+     * Provide the path of directory using {@code path} and {@code otherPathParts} parameters.
+     * Method inspects that directory to automatically identify the ontology file (must be an .owl file),
+     * along with two csv files, one meant for class names, and the other for instances. 
+     * <p>
+     * Among the csv files, the smallest in size will be assumed as the input file for class names.
+     * 
+     * @param   path            string, path to ontology and csv input files
+     * @param   otherPathParts  string, remaining parts of the path (if any) as varargs
+     * @return                  {@link Optional} of {@link InstancePopulator}
+     * @see                     Optional
+     */
     public static Optional<InstancePopulator> create(String path, String... otherPathParts) {
         try (Stream<Path> filesInCurrentDirectory = 
             Files.list(Paths.get(path, otherPathParts)).filter(Files::isRegularFile)
@@ -143,7 +234,24 @@ public class InstancePopulator {
         }
     }
 
-    public void process() {
+    /**
+     * Creates individuals, and adds them to the ontology.
+     * <p>
+     * In order to not override the original ontology file, 
+     * it produces a new ontology file ({@code generated.owl}) 
+     * which will contain the newly introduced instances.
+     * <p>
+     * Accumulates the skipped csv lines in a {@code skipped.txt} file, 
+     * and reports the number of processes instances.
+     * <p>
+     * Between the instantiation of the InstancePopulator 
+     * and the invocation of this {@code process} method,
+     * there should be a {@link Optional#ifPresent} check
+     * to make sure that the instantiation was successful.
+     * 
+     * @return int  Number of created individuals  
+     */
+    public int process() {
         try (
             PrintWriter skippedRecordsWriter = 
                 new PrintWriter(Paths.get(".","skipped.txt").toFile(), "UTF-8");
@@ -207,11 +315,21 @@ public class InstancePopulator {
             // Report processing result
             logger.info(instanceCount + " new individuals added to ontology");
 
+            return instanceCount;
+
         } catch (IOException e) {
             e.printStackTrace();
+            return -1;
         }
     }
 
+    /**
+     * A demo runner that demonstrates the usage 
+     * in case the input .owl and .csv files 
+     * are put in the current working directory.
+     * 
+     * @param   args    optional execution parameters (that actually are NOT evaluated)
+     */
     public static void main(String... args) {
         Optional<InstancePopulator> populator = InstancePopulator.create();
         populator.ifPresent(p -> p.process());

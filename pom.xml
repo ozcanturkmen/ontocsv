@@ -13,6 +13,7 @@
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.failsafe.version>3.0.0-M4</maven.failsafe.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.jena>3.14.0</version.jena>
         <version.slf4j>1.7.30</version.slf4j>
@@ -123,6 +124,30 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>failsafe</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${maven.failsafe.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*ITCase</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <build>
@@ -154,6 +179,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.1.1</version>
+                <configuration>
+                    <tags>
+                        <tag>
+                            <name>ot</name>
+                            <!-- author name tag for all places -->
+                            <placement>a</placement>
+                            <head>Özcan Türkmen</head>
+                        </tag>
+                    </tags>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
