@@ -19,8 +19,6 @@ Maven:
 * [SLF4J](https://github.com/qos-ch/slf4j), version 1.7.30
 
 ## License
-### License
-
 OntoCSV is released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
 
 >
