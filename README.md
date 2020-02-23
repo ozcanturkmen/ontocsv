@@ -20,11 +20,16 @@ Maven:
 
 ### InstancePopulator class
 
-OntoCSV provides a single immutable *InstancePopulator* class which has a static factory method ```InstancePopulator.create()``` to instantiate the class, as well as a public instance method, ```process()```, to populate the desired ontology classes with the instances/individuals provided via an input csv file. 
+OntoCSV provides the immutable *InstancePopulator* class which is instantiated through a Builder (*InstancePopulator.Builder*) instance's ```build()``` method. InstancePopulator provides a public instance method ```process()``` to populate the desired ontology classes with the instances/individuals provided via an input csv file. 
 
-The no-argument variant of ```InstancePopulator.create()``` expects to find the input files in the current working directory, whereas the overloaded variant, ```InstancePopulator.create(String path, String... otherPathParts)```, can be hinted about the location of the files. In the latter case, the method parameters are passed to ```java.nio.file.Paths.get(String first, String... other)``` method to construct a system dependent ```java.nio.file.Path```. 
+The Builder class provides the following methods to configure an InstancePopulator: 
 
-Note, however, that in either case the ```create()``` method is working with a single **directory path**, and **not** with separate **file paths**. 
+* ```withPath(String path, String... otherPathParts)``` : Specifies the path of the directory for input files. If ```build()``` is invoked without specifying a custom path, the input files will be searched within the current working directory.
+* ```withConfigurator(String configuratorYaml)``` : Specifies the custom transformation rules (trim, letter casing, character removals/replacements) to be applied to each parsed instance name (reads settings from the YAML configuration file specified by **configuratorYaml** parameter).
+* ```withSpec(OntModelSpec spec)``` : Sets the Apache Jena ontology model specification. Default spec is **OWL_DL_MEM**.
+* ```withOWL2Correction()``` : Re-creates existing individuals (if any) as **OWL2 Named Individuals** before processing the ontology file. Activating this option would probably be desirable when working with a source ontology file that is already populated with some OWL2 named individuals, because currently the Apache Jena library does not properly load an OWL2 ontology to the in-memory model.
+
+None of the configuration methods listed above is required. It is up to the user whether to chain a combination of these method calls or not, before invoking the ```build()``` method. It should be noted, however, that a ```build()``` method call issued immediately after a  ```new InstancePopulator.Builder()``` statement will result in an InstancePopulator instance that will look for the current working directory when searching for input files, and uses the default **OWL_DL_MEM** ontology model specification, without any OWL2 names individuals correction or instance name transformations.  
 
 ### Input files (1 .owl and 2 .cvs files)
 
@@ -34,26 +39,51 @@ The original ontology (a .owl file in RDF/XML format), a csv file containing the
 
 The class names csv file consists of a single line, containing the names of classes as its comma separated values. You can think of it as the header line that is split from a single instances input csv file. The reason the input data is expected to split into two separate files is to better benefit from *Java 8 Streams API*'s parallel processing capabilities. 
 
-In the common use case, the instances input csv file will likely be huge, so there is a good reason to move the header line to a separate file, so that the remaining lines can be easily processed in parallel, without the need to sequentialize the ```java.nio.file.Files.lines()``` stream in order to read the first (the header) line. 
+In the common use case, the instances input csv file will likely be huge, so there is a good reason to move the header line to a separate file, so that the remaining lines can be easily processed in parallel, without the need to sequentialize the ```java.nio.file.Files.lines()``` stream in order to read the first line. 
 
 ### Auto-discovery of input files within the specified directory
 
-We do not need to provide the name of each input file separately, as with the above assumption, and thanks to the input splitting, the auto-discovery of input files within the specified directory becomes a simple task for the InstancePopulator: "Source ontology" = The first found .owl file,  "classes input file" = .csv file that is the smallest in size, "instances input file" = the other .csv file. 
+Thanks to the input splitting, with the above assumption, the auto-discovery of input files within the specified directory becomes a simple task for the InstancePopulator: "Source ontology" = The first found .owl file,  "classes input file" = .csv file that is the smallest in size, "instances input file" = the other .csv file. So there is no need to provide the names of input files separately. 
 
 Note that the instances input file would be **some** other csv file, so it's best to keep no more than 2 csv files in the input directory, rather than relying on programmatic guessing or randomness. 
 
+### Configuring custom string transformations to be applied to parsed instance names
+
+InstancePopulator does not support custom string transformations by default, mainly due to Jena's capability of invalid XML characters handling. Still, you might want the InstancePopulator to apply some custom string transformations (such as removing spaces, replacing some non-word characters with underscores, etc.), in a specific order, before it adds the instances to the ontology. To achieve that, you can create a YAML transformations configuration file, and make the InstancePopulator use these settings, by providing the path of the configuration file within the ```configuratorYaml``` parameter of Builder's ```withConfigurator(String configuratorYaml)``` method. 
+
+A sample name transformations configuration file is shown below: 
+
+```Yaml
+trim: true # true or false; false if key or value is not present
+casing: "lower" # "lower" or "upper"; none if key or value is not present
+# transformations will be applied to each instance name, in the order specified below
+transformations: 
+  -  pattern: "[\")(]+" # regex pattern to remove all double quotes and parantheses
+     replacement: ""
+  -  pattern: "\\s+" # regex pattern to replace whitespace character sequences with a single underscore
+     replacement: "_"
+```
+
 ## Example Code
 
-The following example demonstrates the usage of *InstancePopulator*, including the static factory method ```InstancePopulator.start()```. 
-
-The no-argument variant of ```start()``` expects to find the input files in the current working directory. The simple logic behind the auto-discovery of input files is explained in above section. 
+The following example demonstrates the usage of *InstancePopulator*, including the ```build()``` method and the configuration methods exposed by the *Builder*, as well as the ```process()``` method of the *InstancePopulator*, which performs the actual populating task. 
 
 ```Java
 import com.github.ozcanturkmen.ontocsv.InstancePopulator;
 
 public class Example {
     public static void main(String... args) {
-        InstancePopulator.start();
+        try{
+            new InstancePopulator.Builder()
+                .withPath("assets")     // there should be 2 csv files and an .owl file present in ./assets directory
+                .withConfigurator("config.yml") // transformation rules are placed in config.yml, located somewhere within the classpath  
+                .withOWL2Correction()   // existing OWL2 named individuals (if any) will be pre-processed
+                .withSpec(InstancePopulator.Builder.OWL_DL_MEM) // this is the default spec (Jena ontology model specification)
+                .build()    // get an InstancePopulator instance with above configuration
+                .process(); // resulting ontology will be named as generated.owl
+        } catch(Throwable e){
+            // Expect to catch some IllegalArgumentExceptions here, in case of misconfiguration
+        }
     }
 }
 ```
