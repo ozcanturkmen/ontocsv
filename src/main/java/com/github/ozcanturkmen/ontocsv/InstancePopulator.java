@@ -251,13 +251,17 @@ public class InstancePopulator {
                 this.transformationConfigurator = Optional.ofNullable(mapper.readValue(cfg, Configurator.class));
                 return this;
             } catch (JsonMappingException jmpex){
-                throw new IllegalArgumentException("Invalid configuration while mapping in " + configuratorYaml + ": " + jmpex.getMessage());
+                throw new IllegalArgumentException(
+                    "Invalid configuration while mapping in " + configuratorYaml + ": " + jmpex.getMessage());
             } catch (JsonProcessingException jpex){
-                throw new IllegalArgumentException("Invalid configuration while parsing in " + configuratorYaml + ": " + jpex.getMessage());
+                throw new IllegalArgumentException(
+                    "Invalid configuration while parsing in " + configuratorYaml + ": " + jpex.getMessage());
             } catch (IOException ioex){
-                throw new IllegalArgumentException("Cannot read YAML configuration file " + configuratorYaml + ": " + ioex.getMessage());
+                throw new IllegalArgumentException(
+                    "Cannot read YAML configuration file " + configuratorYaml + ": " + ioex.getMessage());
             } catch (Exception e){
-                throw new IllegalArgumentException("Inexistent or inaccessible YAML configuration file " + configuratorYaml);
+                throw new IllegalArgumentException(
+                    "Inexistent or inaccessible YAML configuration file " + configuratorYaml);
             }
         }
 
@@ -317,12 +321,14 @@ public class InstancePopulator {
             OntModel ontologyModel = ModelFactory.createOntologyModel(this.ontModelSpec, null);
             InputStream in = FileManager.get().open(this.ontologyFilePath.toString());
             if (in == null) {
-                throw new IllegalArgumentException("Cannot read ontology file " + this.ontologyFilePath.toString());
+                throw new IllegalArgumentException(
+                    "Cannot read ontology file " + this.ontologyFilePath.toString());
             }
             try{
                 ontologyModel.read(in, null);
             } catch (JenaException e){
-                throw new IllegalArgumentException("Malformed ontology file " + this.ontologyFilePath.toString() + e.getMessage());
+                throw new IllegalArgumentException(
+                    "Malformed ontology file " + this.ontologyFilePath.toString() + e.getMessage());
             }
             logger.info("Ontology " + this.ontologyFilePath.toString() + " loaded into memory");
             this.model = ontologyModel;
@@ -345,7 +351,8 @@ public class InstancePopulator {
     private static Function<String, String> trimFunction = s -> s.trim();
     private static Function<String, String> lowerCaseFunction = s -> s.toLowerCase();
     private static Function<String, String> upperCaseFunction = s -> s.toUpperCase();
-    private static BiFunction<String, Configurator.Transformation, String> replacer = (s, t) -> s.replaceAll(t.pattern, t.replacement);
+    private static BiFunction<String, Configurator.Transformation, String> replacer = (s, t) -> 
+        s.replaceAll(t.pattern, t.replacement);
 
     /**
      * Private constructor accessed through {@link Builder#build()} static factory method. 
@@ -368,7 +375,7 @@ public class InstancePopulator {
      * as a chain of some predefined String functions (such as trim, upperCase, and lowerCase)
      * that will be applied to each parsed instance name
      * 
-     * @return {@link Function}, nitial transformation function that takes a {@code String} and returns another {@code String} 
+     * @return {@link Function}, A function that takes a {@code String} and returns another {@code String} 
      */
     Function<String,String> getInitialTransformationFunction() {
 
