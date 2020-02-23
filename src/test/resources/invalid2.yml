@@ -1,0 +1,5 @@
+trim: 7 # should be boolean!!
+casing: "upper" 
+transformations:
+  -  pattern: "[\")(]+"
+     replacement: ""

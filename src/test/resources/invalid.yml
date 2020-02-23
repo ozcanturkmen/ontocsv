@@ -1,0 +1,5 @@
+trim: true
+casings: "upper" # should be "casing" instead of "casings"!1
+transformations:
+  -  pattern: "[\")(]+"
+     replacement: ""

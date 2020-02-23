@@ -1,0 +1,5 @@
+trim: true
+casing: "upper"
+transformations:
+  -  pattern: "[\")(]+"
+     replacement: ""
