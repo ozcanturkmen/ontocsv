@@ -22,41 +22,38 @@ import static java.util.stream.Collectors.joining;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Integration testing for {@link InstancePopulator}
+ * Integration testing for: {@link InstancePopulator#process()}
  */
 public class InstancePopulatorITCase {
     @Test
-    public void testProcess(){
-        Optional<InstancePopulator> populator = InstancePopulator.create("src", "test", "resources");
-        Assert.assertTrue(populator.isPresent());
-        populator.ifPresent(p -> {
-            int instancesCreated = p.process();
-            // should create 6 new instances according to test input files
-            Assert.assertEquals(instancesCreated,6);
+    public void testProcess() {
+        InstancePopulator populator = new InstancePopulator.Builder()
+        .withConfigurator("config.yml")
+        .withPath("src","test","resources")
+        .withOWL2Correction()
+        .build();
 
-            try(
-                Stream<String> generatedOntologyFile = Files.lines(Paths.get("generated.owl"));
-                Stream<String> skippedRecordsFile = Files.lines(Paths.get("skipped.txt"))
-            ) {
-                // should produce a generated.owl file in current directory
-                long exists = generatedOntologyFile.limit(1).collect(counting()).longValue();
-                Assert.assertTrue(exists == 1L);
+    int instancesCreated = populator.process();
+    // should create 6 new individuals as per sample csv file
+    Assert.assertEquals(instancesCreated, 6);
 
-                // should produce a skipped.txt file in current directory, containing a single line
-                String lineRead = skippedRecordsFile.limit(1).flatMap(l -> Arrays.stream(l.split(","))).collect(joining(" "));
-                Assert.assertEquals(lineRead, "This line will be skipped");
+    try (Stream<String> generatedOntologyFile = Files.lines(Paths.get("generated.owl"));
+            Stream<String> skippedRecordsFile = Files.lines(Paths.get("skipped.txt"))) {
+        // should produce a generated.owl file in current directory
+        long exists = generatedOntologyFile.limit(1).collect(counting()).longValue();
+        Assert.assertTrue(exists == 1L);
 
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-            
-        });
-        
+        // should produce a skipped.txt file in current directory, containing a single line
+        String lineRead = skippedRecordsFile.limit(1).flatMap(l -> Arrays.stream(l.split(","))).collect(joining(" "));
+        Assert.assertEquals(lineRead, "This line will be skipped");
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
     }
 }

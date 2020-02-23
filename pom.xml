@@ -17,6 +17,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.jena>3.14.0</version.jena>
         <version.slf4j>1.7.30</version.slf4j>
+        <version.jacksondataformat>2.10.0</version.jacksondataformat>
+        <version.jacksondatabind>2.10.0</version.jacksondatabind>
     </properties>
 
     <licenses>
@@ -77,6 +79,17 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${version.slf4j}</version>
+        </dependency>
+        <!-- JACKSON: -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>${version.jacksondataformat}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${version.jacksondatabind}</version>
         </dependency>
         <!-- tests: -->
         <dependency>

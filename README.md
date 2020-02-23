@@ -42,28 +42,18 @@ We do not need to provide the name of each input file separately, as with the ab
 
 Note that the instances input file would be **some** other csv file, so it's best to keep no more than 2 csv files in the input directory, rather than relying on programmatic guessing or randomness. 
 
-### Constructor creates an ```java.util.Optional``` 
-
-If everything goes well, that is a correct path has been supplied, and no ```IllegalArgumentException``` has been thrown, ```InstancePopulator.create()``` will return an InstancePopulator instance, but wrapped inside an ```Optional```. 
-
-So the consumer code is encouraged and supposed to check whether the ```Optional``` is empty or not, prior to ```process()``` method invocation.
-
 ## Example Code
 
-The following example demonstrates the usage of *InstancePopulator*, including the static factory method ```InstancePopulator.create()``` and the ```process()``` instance method. 
+The following example demonstrates the usage of *InstancePopulator*, including the static factory method ```InstancePopulator.start()```. 
 
-The no-argument variant of ```create()``` expects to find the input files in the current working directory. The simple logic behind the auto-discovery of input files is explained in above section. 
-
-Note the ```Optional.ifPresent()``` check before invoking ```process()```:  
+The no-argument variant of ```start()``` expects to find the input files in the current working directory. The simple logic behind the auto-discovery of input files is explained in above section. 
 
 ```Java
-import com.github.ozcanturkmen.ontocsv.*;
-import java.util.Optional;
+import com.github.ozcanturkmen.ontocsv.InstancePopulator;
 
 public class Example {
     public static void main(String... args) {
-        Optional<InstancePopulator> populator = InstancePopulator.create();
-        populator.ifPresent(p -> p.process());
+        InstancePopulator.start();
     }
 }
 ```
@@ -75,7 +65,6 @@ Running this program with the provided test resources produces the following out
 
 ## Dependencies
 * [Apache Jena](https://github.com/apache/jena), version 3.14.0
-* [SLF4J](https://github.com/qos-ch/slf4j), version 1.7.30
 
 ## License
 OntoCSV is released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
