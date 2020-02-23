@@ -77,15 +77,15 @@ public class Example {
             new InstancePopulator.Builder()
                 // there should be 2 csv files and an .owl file present in ./assets directory    
                 .withPath("assets")
-                // transformation rules are placed in config.yml, located somewhere within the classpath
+                // transformation rules are placed in config.yml, located within the classpath
                 .withConfigurator("config.yml") 
                 // existing OWL2 named individuals (if any) will be pre-processed  
                 .withOWL2Correction()
                 // this is the default spec (Jena ontology model specification)
                 .withSpec(InstancePopulator.Builder.OWL_DL_MEM) 
-                // get an InstancePopulator instance with above configuration
+                // get an InstancePopulator instance using above configuration
                 .build()
-                // resulting ontology will be named as generated.owl, skipped records will be reported in skipped.txt    
+                // resulting ontology: ./generated.owl, skipped records: ./skipped.txt
                 .process(); 
         } catch(Throwable e){
             // Expect to catch some IllegalArgumentExceptions here, in case of misconfiguration
