@@ -18,7 +18,7 @@
         <version.jena>3.14.0</version.jena>
         <version.slf4j>1.7.30</version.slf4j>
         <version.jacksondataformat>2.10.0</version.jacksondataformat>
-        <version.jacksondatabind>2.12.6.1</version.jacksondatabind>
+        <version.jacksondatabind>2.13.4.1</version.jacksondatabind>
     </properties>
 
     <licenses>
